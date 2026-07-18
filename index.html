@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#7F77DD">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>呆兔要变生猛兔</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='32' fill='%237F77DD'/%3E%3Ctext x='96' y='130' text-anchor='middle' font-size='100'%3E🐰%3C/text%3E%3C/svg%3E">
+<style>
+:root{--primary:#7F77DD;--primary-light:#EEEDFE;--primary-dark:#534AB7;--accent:#D4537E;--accent-light:#FBEAF0;--green:#22C55E;--green-light:#DCFCE7;--amber:#F59E0B;--amber-light:#FEF3C7;--blue:#3B82F6;--blue-light:#DBEAFE;--bg:#F0EEF8;--card:#FFFFFF;--text:#1A1A2E;--text-muted:#888780;--text-light:#5F5E5A;--border:#E2E0F0;--shadow:0 2px 16px rgba(83,74,183,0.06);--radius:16px;--radius-sm:12px;--nav-height:68px;--header-height:56px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100dvh;width:100vw;position:fixed}
+input,button,select,textarea{font-family:inherit;font-size:inherit;border:none;outline:none;background:none}
+button{cursor:pointer}
+input:focus,select:focus,textarea:focus{outline:none}
+
+/* Splash Screen */
+#splash{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#7F77DD 0%,#534AB7 50%,#3C3489 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:splashFadeOut 0.8s ease 2.5s forwards;overflow:hidden}
+.splash-bg-circle{position:absolute;border-radius:50%;pointer-events:none}
+.splash-bg-1{width:600px;height:600px;background:rgba(255,255,255,0.03);top:-200px;right:-200px;animation:bgFloat 8s ease-in-out infinite}
+.splash-bg-2{width:400px;height:400px;background:rgba(255,255,255,0.05);bottom:-150px;left:-150px;animation:bgFloat 10s ease-in-out infinite reverse}
+@keyframes bgFloat{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(-30px,30px) rotate(180deg)}}
+.splash-rabbit-wrap{position:relative;z-index:1;width:280px;height:280px;display:flex;align-items:center;justify-content:center}
+.splash-rabbit{width:260px;height:260px;object-fit:contain;animation:bounce 1.2s ease-in-out infinite;position:relative;z-index:2;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.4))}
+.splash-energy-ring{position:absolute;width:280px;height:280px;border:3px solid rgba(255,255,255,0.3);border-top-color:#fff;border-right-color:rgba(255,215,0,0.6);border-radius:50%;animation:spin 2s linear infinite;z-index:1}
+.splash-energy-ring::after{content:'';position:absolute;inset:-8px;border:2px solid rgba(255,255,255,0.15);border-bottom-color:rgba(255,150,200,0.6);border-radius:50%;animation:spin 3s linear infinite reverse}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.splash-sparkle{position:absolute;font-size:24px;animation:sparkleFloat 2s ease-in-out infinite;z-index:3;filter:drop-shadow(0 0 8px rgba(255,255,255,0.8))}
+.splash-sparkle-1{top:10px;left:20px;animation-delay:0s}
+.splash-sparkle-2{top:30px;right:15px;animation-delay:0.5s;font-size:28px;color:#FFD700}
+.splash-sparkle-3{bottom:40px;left:5px;animation-delay:1s;font-size:22px}
+.splash-sparkle-4{bottom:20px;right:25px;animation-delay:1.5s;font-size:30px}
+@keyframes sparkleFloat{0%,100%{transform:translateY(0) scale(1);opacity:0.7}50%{transform:translateY(-15px) scale(1.3);opacity:1}}
+.splash-title{color:#fff;font-size:32px;font-weight:800;margin-top:24px;letter-spacing:3px;animation:slideUp 0.6s ease 0.3s both;text-shadow:0 4px 20px rgba(0,0,0,0.3),0 0 30px rgba(255,255,255,0.4);background:linear-gradient(180deg,#fff 0%,#FFD700 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.splash-sub{color:rgba(255,255,255,0.9);font-size:14px;margin-top:10px;animation:slideUp 0.6s ease 0.5s both;letter-spacing:2px;font-weight:500}
+.splash-loader{width:140px;height:3px;background:rgba(255,255,255,0.15);border-radius:2px;margin-top:36px;overflow:hidden;animation:slideUp 0.6s ease 0.7s both;box-shadow:0 0 10px rgba(255,255,255,0.3)}
+.splash-loader-bar{height:100%;width:0;background:linear-gradient(90deg,#FFD700,#fff);border-radius:2px;animation:loadBar 2s ease 0.3s forwards;box-shadow:0 0 10px rgba(255,215,0,0.8)}
+.splash-saying{color:rgba(255,255,255,0.7);font-size:12px;margin-top:14px;animation:slideUp 0.6s ease 0.9s both;letter-spacing:1px}
+@keyframes bounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-18px) scale(1.05)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes splashFadeOut{to{opacity:0;pointer-events:none}}
+@keyframes loadBar{from{width:0}to{width:100%}}
+
+/* App Shell */
+#app{height:100dvh;display:none;flex-direction:column;padding-bottom:var(--nav-height)}
+#app.show{display:flex}
+
+/* Header */
+.app-header{height:var(--header-height);display:flex;align-items:center;padding:0 18px;flex-shrink:0;position:relative;z-index:10}
+.app-header h1{font-size:18px;font-weight:700;color:var(--primary-dark);flex:1}
+.header-btn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;transition:background 0.2s}
+.header-btn:active{background:var(--primary-light)}
+
+/* Pages */
+.pages{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;position:relative}
+.pages::-webkit-scrollbar{width:3px}
+.pages::-webkit-scrollbar-track{background:transparent}
+.pages::-webkit-scrollbar-thumb{background:var(--primary-light);border-radius:2px}
+.page{display:none;padding:16px;padding-bottom:24px;min-height:100%}
+.page.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Bottom Nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav-height);background:var(--card);border-top:1px solid var(--border);display:flex;z-index:100;padding:4px 0;padding-bottom:calc(4px + env(safe-area-inset-bottom,0))}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted);transition:color 0.2s;padding:2px;gap:1px}
+.nav-item.active{color:var(--primary)}
+.nav-item .nav-icon{font-size:24px;line-height:1}
+.nav-item .nav-label{font-size:11px;font-weight:500}
+
+/* Card */
+.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.card-title{font-size:16px;font-weight:600;margin-bottom:12px;color:var(--text)}
+.card-title .emoji{font-size:20px;margin-right:6px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:14px 24px;border-radius:var(--radius-sm);font-size:15px;font-weight:600;min-height:48px;transition:opacity 0.15s}
+.btn:active{opacity:0.7}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-outline{background:var(--card);border:2px solid var(--primary);color:var(--primary)}
+.btn-outline:active{background:var(--primary-light)}
+.btn-block{width:100%}
+.btn-sm{padding:10px 18px;font-size:13px;min-height:40px;border-radius:10px}
+
+/* Form */
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:14px;font-weight:500;color:var(--text-muted);margin-bottom:6px}
+.form-input{width:100%;padding:14px 16px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:16px;background:var(--bg);transition:border-color 0.2s;color:var(--text)}
+.form-input:focus{border-color:var(--primary)}
+.form-select{-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%23888780' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+textarea.form-input{resize:none;min-height:80px}
+
+/* Exercise Selector */
+.exercise-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.exercise-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 10px;border-radius:var(--radius-sm);background:var(--card);font-size:13px;font-weight:600;transition:all 0.2s;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.exercise-btn:active{transform:scale(0.95)}
+.exercise-btn .ex-icon{font-size:34px;margin-bottom:2px}
+.exercise-btn.selected{background:var(--primary-light);color:var(--primary-dark);box-shadow:0 0 0 2px var(--primary)}
+.exercise-btn .ex-name{font-size:14px;font-weight:600}
+
+/* Input Row */
+.input-row{display:flex;gap:10px;margin-bottom:10px}
+.input-row .form-group{flex:1;margin-bottom:0}
+.input-row .form-input{text-align:center;font-size:18px;font-weight:600;padding:10px}
+.input-row .form-label{text-align:center}
+
+/* Stats - Tab Bar */
+.stats-tabs{display:flex;gap:4px;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:16px;border:1px solid var(--border)}
+.stats-tab{flex:1;padding:10px 8px;text-align:center;border-radius:8px;font-size:13px;font-weight:600;color:var(--text-muted);transition:all 0.3s;letter-spacing:1px}
+.stats-tab.active{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;font-weight:700;box-shadow:0 4px 12px rgba(83,74,183,0.25)}
+/* Stat Cards */
+.stat-card{text-align:center;padding:18px 10px;border-radius:var(--radius-sm);background:var(--card);position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.stat-number{font-size:30px;font-weight:700;color:var(--primary-dark)}
+.stat-label{font-size:11px;color:var(--text-muted);margin-top:2px;font-weight:500}
+
+/* Medal Grid - 矢量兔子勋章系统 */
+.medal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.medal-item{display:flex;flex-direction:column;align-items:center;padding:16px 10px;border-radius:var(--radius);background:var(--card);border:2px solid var(--border);transition:all 0.3s;position:relative;overflow:hidden}
+.medal-circle{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:8px;flex-shrink:0;overflow:hidden;border-width:2px;border-style:solid}
+.medal-bg{position:absolute;inset:0;opacity:0.6}
+.medal-circle-inner{width:66px;height:66px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
+.medal-rabbit-svg svg{width:38px;height:38px}
+.medal-label{font-size:8px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.5)}
+.medal-item.achieved .medal-circle{box-shadow:0 0 12px rgba(255,215,0,0.4)!important}
+.medal-item.locked .medal-circle{opacity:0.55}
+.medal-item.locked .medal-rabbit-svg svg{filter:grayscale(0.6);opacity:0.5}
+.medal-item.achieved::after{content:'';position:absolute;inset:0;border-radius:var(--radius);background:linear-gradient(135deg,transparent 60%,rgba(255,215,0,0.08) 100%);pointer-events:none}
+.medal-shine{position:absolute;top:-30px;left:-30px;width:40px;height:80px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);transform:rotate(45deg);animation:medalShine 3s ease-in-out infinite;pointer-events:none;display:none}
+.medal-item.achieved .medal-shine{display:block}
+@keyframes medalShine{0%{left:-40px}20%{left:140px}100%{left:140px}}
+.medal-item.locked .medal-lock{position:absolute;width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2;font-size:22px;background:rgba(0,0,0,0.25)}
+.medal-item .medal-name{font-size:14px;font-weight:700;margin-top:4px}
+.medal-item.locked .medal-name{color:var(--text-muted)}
+.medal-item .medal-desc{font-size:11px;color:var(--text-muted);text-align:center;margin-top:2px;line-height:1.4}
+.medal-item .medal-progress{font-size:10px;color:var(--primary);margin-top:6px;font-weight:600}
+.medal-item .medal-progress-bar{width:80%;height:4px;background:var(--bg);border-radius:2px;margin-top:2px;overflow:hidden}
+.medal-item .medal-progress-fill{height:100%;background:var(--primary);border-radius:2px;transition:width 0.5s}
+.medal-item .medal-date{font-size:10px;color:var(--green);margin-top:4px;font-weight:500;padding:2px 10px;background:var(--green-light);border-radius:10px}
+.medal-item .medal-date{font-size:10px;color:var(--green);margin-top:2px}
+
+/* Stopwatch */
+.stopwatch-display{font-size:56px;font-weight:800;text-align:center;padding:30px 0;font-variant-numeric:tabular-nums;color:var(--primary-dark);letter-spacing:2px;font-family:'Courier New',monospace;text-shadow:0 2px 10px rgba(83,74,183,0.15)}
+.stopwatch-btns{display:flex;gap:16px;justify-content:center;margin-bottom:20px}
+.stopwatch-btn{width:76px;height:76px;border-radius:50%;font-size:30px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-weight:700;box-shadow:0 4px 15px rgba(0,0,0,0.1)}
+.stopwatch-btn:active{transform:scale(0.9)}
+.stopwatch-start{background:linear-gradient(135deg,#22C55E,#16A34A);color:#fff}
+.stopwatch-pause{background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff}
+.stopwatch-reset{background:linear-gradient(135deg,#888780,#5F5E5A);color:#fff}
+.stopwatch-done{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;width:100%;border-radius:var(--radius-sm);padding:16px;font-size:16px;margin-top:10px;font-weight:700;box-shadow:0 4px 15px rgba(83,74,183,0.3)}
+
+/* Profile */
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.profile-stat{background:linear-gradient(135deg,var(--card),var(--bg));border-radius:var(--radius-sm);padding:16px;text-align:center;border:1px solid var(--border);position:relative;overflow:hidden}
+.profile-stat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--blue))}
+.profile-stat .num{font-size:26px;font-weight:800;color:var(--primary-dark)}
+.profile-stat .label{font-size:11px;color:var(--text-muted);font-weight:500}
+
+/* Feelings */
+.feeling-item{padding:14px 0;border-bottom:1px solid var(--border)}
+.feeling-item:last-child{border-bottom:none}
+.feeling-item .date{font-size:11px;color:var(--text-muted);font-weight:500}
+.feeling-item .text{font-size:14px;margin-top:4px;line-height:1.6;font-weight:500}
+
+/* Calorie Card */
+.cal-result{display:flex;align-items:center;justify-content:center;gap:16px;padding:16px;background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border-radius:var(--radius-sm);margin-bottom:12px;border:1px solid #FDE68A}
+.cal-result .cal-num{font-size:40px;font-weight:800;color:#D97706;letter-spacing:-1px}
+.cal-result .cal-unit{font-size:14px;color:#92400E;font-weight:500}
+
+/* Toast */
+.toast{position:fixed;top:76px;left:50%;transform:translateX(-50%);background:rgba(30,27,75,0.92);color:#fff;padding:12px 24px;border-radius:24px;font-size:13px;z-index:9999;animation:toastIn 0.3s ease;pointer-events:none;font-weight:500;box-shadow:0 8px 30px rgba(30,27,75,0.3)}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(30,27,75,0.5);z-index:9998;display:none;backdrop-filter:blur(8px)}
+.modal-overlay.show{display:flex;align-items:flex-end;justify-content:center}
+.modal-content{background:var(--card);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:28px 24px;width:100%;max-width:500px;max-height:80vh;overflow-y:auto;animation:slideUp 0.4s cubic-bezier(0.16,1,0.3,1)}
+.modal-content h2{font-size:18px;font-weight:700;margin-bottom:16px}
+.share-card{background:linear-gradient(135deg,#EEEDFE,#E0E7FF);border-radius:var(--radius-sm);padding:24px;text-align:center;margin-bottom:16px;border:1px solid #C7D2FE}
+.share-card .title{font-size:22px;font-weight:800;color:var(--primary-dark)}
+.share-card .stats{font-size:13px;color:var(--text-light);margin:8px 0;font-weight:500}
+.share-card .cal{font-size:36px;font-weight:800;color:var(--amber);letter-spacing:-1px}
+.share-btn-row{display:flex;gap:10px}
+.share-btn-row button{flex:1;padding:14px;border-radius:var(--radius-sm);font-size:14px;font-weight:700}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* Reminder */
+.reminder-banner{background:linear-gradient(135deg,#FDF2F8,#FFF1F2);border:1px solid #F472B6;border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:12px;box-shadow:0 4px 12px rgba(244,114,182,0.15)}
+.reminder-banner .icon{font-size:28px}
+.reminder-banner .text{flex:1;font-size:13px;font-weight:500;color:#9D174D}
+.reminder-banner .close-btn{font-size:18px;color:var(--text-muted)}
+
+/* Calorie met values */
+.met-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.met-table th,.met-table td{padding:6px 8px;text-align:left;border-bottom:1px solid var(--border)}
+.met-table th{color:var(--text-muted);font-weight:500}
+
+/* Scrollbar */
+.pages::-webkit-scrollbar{width:3px}
+.pages::-webkit-scrollbar-track{background:transparent}
+.pages::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* Canvas for charts */
+.chart-container{width:100%;height:200px;position:relative;margin-bottom:10px}
+.chart-container canvas{width:100%!important;height:100%!important}
+
+/* Share poster canvas */
+#shareCanvas{display:none}
+</style>
+</head>
+<body>
+
+<!-- ============ SPLASH SCREEN ============ -->
+<div id="splash">
+  <div class="splash-bg-circle splash-bg-1"></div>
+  <div class="splash-bg-circle splash-bg-2"></div>
+  <div class="splash-rabbit-wrap">
+    <div class="splash-energy-ring"></div>
+    <div class="splash-sparkle splash-sparkle-1">✨</div>
+    <div class="splash-sparkle splash-sparkle-2">⚡</div>
+    <div class="splash-sparkle splash-sparkle-3">✨</div>
+    <div class="splash-sparkle splash-sparkle-4">💪</div>
+    <img src="assets/rabbit_splash.png" class="splash-rabbit" alt="肌肉兔子">
+  </div>
+  <div class="splash-title">呆兔要变生猛兔</div>
+  <div class="splash-sub">🏋️ 暑假增肌减脂计划 💪</div>
+  <div class="splash-loader"><div class="splash-loader-bar"></div></div>
+  <div class="splash-saying">一起撸铁，冲鸭！🔥</div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div id="app">
+  <!-- Header -->
+  <header class="app-header">
+    <h1 id="pageTitle">呆兔要变生猛兔</h1>
+    <button class="header-btn" id="headerShare" onclick="openShare()">📤</button>
+  </header>
+
+  <!-- Pages -->
+  <div class="pages" id="pagesContainer">
+    <!-- HOME -->
+    <div id="page-home" class="page active">
+      <!-- Today's Summary -->
+      <div id="todayOverview"></div>
+      <div id="reminderBanner"></div>
+      <!-- Today's Exercises List -->
+      <div class="card" id="todayExercisesCard" style="display:none">
+        <div class="card-title"><span class="emoji">💪</span>今日锻炼记录</div>
+        <div id="todayExerciseList"></div>
+      </div>
+      <!-- Quick Actions -->
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button class="btn btn-primary" style="flex:1" onclick="navigateTo('record')">➕ 记录锻炼</button>
+        <button class="btn btn-outline" style="flex:1" onclick="navigateTo('profile')">⚖️ 记体重</button>
+      </div>
+      <!-- Stats Bar -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+        <div class="stat-card"><div class="stat-number" id="homeStreak">0</div><div class="stat-label">连续打卡</div></div>
+        <div class="stat-card"><div class="stat-number" id="homeMonth">0</div><div class="stat-label">本月锻炼</div></div>
+        <div class="stat-card"><div class="stat-number" id="homeTotalCal">0</div><div class="stat-label">总消耗大卡</div></div>
+      </div>
+      <!-- Recent Workouts -->
+      <div class="card">
+        <div class="card-title"><span class="emoji">📋</span>最近锻炼</div>
+        <div id="recentWorkouts"></div>
+      </div>
+      <!-- Body Weight -->
+      <div class="card" id="homeBodyCard">
+        <div class="card-title"><span class="emoji">⚖️</span>身体数据</div>
+        <div id="homeBodyData" style="display:flex;gap:12px"></div>
+      </div>
+      <!-- Week Trend -->
+      <div class="card">
+        <div class="card-title"><span class="emoji">📈</span>本周趋势</div>
+        <div class="chart-container" id="weekChartHome"><canvas id="weekChartCanvas"></canvas></div>
+      </div>
+    </div>
+
+    <!-- RECORD -->
+    <div id="page-record" class="page">
+      <div style="display:flex;align-items:center;gap:10px;background:var(--card);border-radius:var(--radius);padding:10px 14px;margin-bottom:12px;box-shadow:var(--shadow)">
+        <span style="font-size:20px">📅</span>
+        <input type="date" class="form-input" id="recordDate" style="border:none;background:var(--bg);padding:10px 12px;flex:1;font-size:16px;font-weight:600" onchange="showToast('📅 日期已选择：'+this.value)">
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="emoji">💪</span>选择运动项目</div>
+        <div class="exercise-grid" id="exerciseGrid"></div>
+      </div>
+      <div class="card" id="recordInputCard" style="display:none">
+        <div class="card-title"><span class="emoji">📋</span>输入数据</div>
+        <div id="recordInputs"></div>
+        <div id="calEstimate" class="cal-result" style="display:none"></div>
+        <div class="form-group">
+          <label class="form-label">💬 运动感受</label>
+          <textarea class="form-input" id="feelingInput" placeholder="今天状态怎么样？写下你的感受..." style="min-height:70px"></textarea>
+        </div>
+        <button class="btn btn-primary btn-block" onclick="saveRecord()">✅ 保存记录</button>
+      </div>
+      <button class="btn btn-outline btn-block" onclick="navigateTo('stopwatch')" style="margin-top:8px">⏱️ 打开秒表计时</button>
+    </div>
+
+    <!-- STOPWATCH -->
+    <div id="page-stopwatch" class="page">
+      <div class="card">
+        <div class="card-title"><span class="emoji">⏱️</span>秒表计时</div>
+        <div class="stopwatch-display" id="stopwatchDisplay">00:00.0</div>
+        <div class="stopwatch-btns">
+          <button class="stopwatch-btn stopwatch-start" id="swStartBtn" onclick="swStart()">▶</button>
+          <button class="stopwatch-btn stopwatch-pause" id="swPauseBtn" onclick="swPause()" style="display:none">⏸</button>
+          <button class="stopwatch-btn stopwatch-reset" onclick="swReset()">↺</button>
+        </div>
+        <button class="stopwatch-btn stopwatch-done" onclick="swDone()">✅ 用时记录到锻炼</button>
+        <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--text-muted)">
+          适合：平板支撑、跑步、开合跳等计时训练
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div id="page-stats" class="page">
+      <div class="stats-tabs" id="statsTabs">
+        <button class="stats-tab active" data-period="day">日</button>
+        <button class="stats-tab" data-period="week">周</button>
+        <button class="stats-tab" data-period="month">月</button>
+        <button class="stats-tab" data-period="year">年</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+        <div class="stat-card"><div class="stat-number" id="statCount">0</div><div class="stat-label">锻炼次数</div></div>
+        <div class="stat-card"><div class="stat-number" id="statCal">0</div><div class="stat-label">消耗大卡</div></div>
+        <div class="stat-card"><div class="stat-number" id="statDuration">0</div><div class="stat-label">锻炼天数</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="emoji">📊</span>运动频率</div>
+        <div class="chart-container" id="freqChart"><canvas id="freqCanvas"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="emoji">⚖️</span>体重变化</div>
+        <div class="chart-container" id="weightChart"><canvas id="weightCanvas"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="emoji">🏆</span>各项目排行</div>
+        <div id="exerciseRanking"></div>
+      </div>
+    </div>
+
+    <!-- MEDAL -->
+    <div id="page-medal" class="page">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <div style="font-size:32px">🏅</div>
+        <div>
+          <div style="font-size:16px;font-weight:600">勋章墙</div>
+          <div style="font-size:12px;color:var(--text-muted)" id="medalSummary">已获得 0 枚勋章</div>
+        </div>
+      </div>
+      <div class="medal-grid" id="medalGrid"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="page-profile" class="page">
+      <div class="card">
+        <div class="card-title"><span class="emoji">⚖️</span>身体数据</div>
+        <div class="profile-grid">
+          <div class="profile-stat">
+            <div class="num" id="lastWeight">--</div>
+            <div class="label">体重 (kg)</div>
+          </div>
+          <div class="profile-stat">
+            <div class="num" id="lastBodyFat">--</div>
+            <div class="label">体脂率 (%)</div>
+          </div>
+          <div class="profile-stat">
+            <div class="num" id="startWeight">--</div>
+            <div class="label">起始体重</div>
+          </div>
+          <div class="profile-stat">
+            <div class="num" id="weightChange">--</div>
+            <div class="label">变化 (kg)</div>
+          </div>
+        </div>
+        <div style="margin-top:14px">
+          <div class="form-group">
+            <label class="form-label">今日体重 (kg)</label>
+            <input type="number" class="form-input" id="weightInput" placeholder="如 55.5" step="0.1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">今日体脂率 (%)</label>
+            <input type="number" class="form-input" id="bodyFatInput" placeholder="如 18.5" step="0.1">
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="saveBodyData()" style="flex:1">✅ 保存</button>
+            <button class="btn btn-outline" onclick="clearForm()" style="flex:1">↺ 清空</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="emoji">💬</span>运动感受日志</div>
+        <div id="feelingsList">
+          <div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px">还没有记录，开始锻炼吧！💪</div>
+        </div>
+      </div>
+
+      <!-- Backup Status -->
+      <div class="card">
+        <div class="card-title"><span class="emoji">📦</span>自动备份</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-size:32px">💾</div>
+          <div style="flex:1;font-size:13px;color:var(--text-muted);line-height:1.5">
+            每次保存数据时自动备份到独立存储区
+            <span style="display:block;font-size:11px;margin-top:4px;color:var(--green)" id="backupInfo">检测中...</span>
+          </div>
+          <button class="btn btn-sm btn-outline" onclick="restoreFromBackup()">↩️ 恢复</button>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:6px">
+          <button class="btn btn-sm btn-primary" onclick="autoDownloadBackup()" style="flex:1;padding:8px">📤 立即导出备份</button>
+          <button class="btn btn-sm btn-outline" onclick="exportData()" style="flex:1;padding:8px">📥 导出JSON</button>
+          <button class="btn btn-sm btn-outline" onclick="document.getElementById('importFileInput').click()" style="flex:1;padding:8px;background:#F3E8FF;border-color:#A855F7;color:#7E22CE">📂 导入备份</button>
+        </div>
+        <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importBackupFile(event)">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button class="btn btn-outline" onclick="clearAllData()" style="flex:1;color:var(--accent);border-color:var(--accent)">🗑️ 清空数据</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-page="home" onclick="navigateTo('home')">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">首页</span>
+    </button>
+    <button class="nav-item" data-page="record" onclick="navigateTo('record')">
+      <span class="nav-icon">📝</span>
+      <span class="nav-label">记录</span>
+    </button>
+    <button class="nav-item" data-page="stats" onclick="navigateTo('stats')">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">统计</span>
+    </button>
+    <button class="nav-item" data-page="medal" onclick="navigateTo('medal')">
+      <span class="nav-icon">🏅</span>
+      <span class="nav-label">勋章</span>
+    </button>
+    <button class="nav-item" data-page="profile" onclick="navigateTo('profile')">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">我的</span>
+    </button>
+  </nav>
+</div>
+
+<!-- Share Modal -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal-content">
+    <h2>📤 分享我的锻炼</h2>
+    <div class="share-card" id="shareCard">
+      <div class="title">呆兔要变生猛兔 🐰💪</div>
+      <div class="stats" id="shareStats">今天锻炼了 0 次，消耗了 0 大卡！</div>
+      <div class="cal" id="shareCal">0</div>
+      <div style="font-size:11px;color:var(--text-muted)">今日消耗大卡</div>
+      <div style="margin-top:10px;font-size:40px">🐰</div>
+    </div>
+    <div class="share-btn-row">
+      <button class="btn btn-primary" onclick="shareAsImage()">📷 生成分享图</button>
+      <button class="btn btn-outline" onclick="shareCopy()">📋 复制文字</button>
+    </div>
+    <div style="text-align:center;margin-top:12px">
+      <button class="btn" style="color:var(--text-muted);font-size:13px" onclick="closeShare()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<canvas id="shareCanvas" width="400" height="500"></canvas>
+
+<script>
+// roundRect polyfill for older browsers
+if(!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x,y,w,h,r) {
+    if(typeof r === 'number') r = [r];
+    const tl = r[0]||0, tr = (r[1]||r[0])||0, br = (r[2]||r[0])||0, bl = (r[3]||r[1]||r[0])||0;
+    this.moveTo(x+tl, y);
+    this.lineTo(x+w-tr, y);
+    this.arcTo(x+w, y, x+w, y+tr, tr);
+    this.lineTo(x+w, y+h-br);
+    this.arcTo(x+w, y+h, x+w-br, y+h, br);
+    this.lineTo(x+bl, y+h);
+    this.arcTo(x, y+h, x, y+h-bl, bl);
+    this.lineTo(x, y+tl);
+    this.arcTo(x, y, x+tl, y, tl);
+    this.closePath();
+    return this;
+  };
+}
+
+// ===================== DATA LAYER =====================
+const DB_KEY = 'datu_workout_data';
+
+function getDB() {
+  try {
+    const raw = localStorage.getItem(DB_KEY);
+    return raw ? JSON.parse(raw) : { records: [], bodyRecords: [], createdAt: Date.now() };
+  } catch(e) { return { records: [], bodyRecords: [], createdAt: Date.now() }; }
+}
+
+function saveDB(db) {
+  localStorage.setItem(DB_KEY, JSON.stringify(db));
+}
+
+const BACKUP_KEY = 'datu_backup';
+const BACKUP_LOG_KEY = 'datu_backup_log';
+
+// Auto-backup: writes a copy to independent storage key plus a backup log
+function autoBackup(db, type) {
+  try {
+    // 1. Save full copy to backup key
+    const backup = {
+      data: db,
+      backedUpAt: Date.now(),
+      backedUpDate: new Date().toISOString(),
+      version: 3
+    };
+    localStorage.setItem(BACKUP_KEY, JSON.stringify(backup));
+    
+    // 2. Save backup log entry
+    const log = JSON.parse(localStorage.getItem(BACKUP_LOG_KEY) || '[]');
+    log.push({
+      type,
+      timestamp: Date.now(),
+      date: new Date().toISOString(),
+      records: db.records.length,
+      bodyRecords: db.bodyRecords.length
+    });
+    // Keep last 20 log entries
+    if(log.length > 20) log.splice(0, log.length - 20);
+    localStorage.setItem(BACKUP_LOG_KEY, JSON.stringify(log));
+  } catch(e) {
+    console.warn('Auto-backup failed:', e);
+  }
+}
+
+// Auto-download backup file to phone
+function autoDownloadBackup() {
+  try {
+    const db = getDB();
+    const data = JSON.stringify({
+      app: '呆兔要变生猛兔',
+      exportedAt: new Date().toISOString(),
+      records: db.records,
+      bodyRecords: db.bodyRecords,
+      totalRecords: db.records.length,
+      totalCalories: db.records.reduce((s,r)=>s+(r.calories||0),0),
+      totalDays: new Set(db.records.map(r=>r.date)).size
+    }, null, 2);
+    
+    const blob = new Blob([data], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `呆兔自动备份_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('📦 自动备份已保存到手机！共' + db.records.length + '条记录');
+  } catch(e) {
+    showToast('📦 备份已完成（本地）');
+  }
+}
+
+// Restore from auto-backup
+function restoreFromBackup() {
+  try {
+    const raw = localStorage.getItem(BACKUP_KEY);
+    if(!raw) { showToast('❌ 没有找到备份数据'); return; }
+    const backup = JSON.parse(raw);
+    if(!backup.data || !backup.data.records) { showToast('❌ 备份数据损坏'); return; }
+    
+    if(!confirm(`确定要恢复备份吗？\n备份时间：${backup.backedUpDate}\n备份包含：${backup.data.records.length}条锻炼记录 + ${backup.data.bodyRecords.length}条身体数据\n\n当前数据将被覆盖！`)) return;
+    
+    localStorage.setItem(DB_KEY, JSON.stringify(backup.data));
+    showToast('✅ 已从备份恢复数据！');
+    renderHome();
+    renderProfile();
+    renderMedals();
+  } catch(e) {
+    showToast('❌ 恢复失败：' + e.message);
+  }
+}
+
+// EXERCISE CONFIG
+const EXERCISES = [
+  { id:'dumbbell', name:'哑铃', type:'weight_reps', met:5.0, icon:'🏋️', unit:'kg' },
+  { id:'bulgarian_squat', name:'保加利亚蹲', type:'reps', met:6.0, icon:'🦵' },
+  { id:'plank', name:'平板支撑', type:'timed', met:3.5, icon:'📋' },
+  { id:'pushup', name:'俯卧撑', type:'reps', met:4.0, icon:'💪' },
+  { id:'pullup', name:'引体向上', type:'reps', met:5.5, icon:'⬆️' },
+  { id:'squat', name:'深蹲', type:'reps', met:5.0, icon:'🦵' },
+  { id:'situp', name:'仰卧起坐', type:'reps', met:3.0, icon:'🧍' },
+  { id:'running', name:'跑步', type:'timed', met:8.0, icon:'🏃' },
+  { id:'jumping_jack', name:'开合跳', type:'reps', met:6.0, icon:'🤸' },
+  { id:'other', name:'其他', type:'reps', met:4.0, icon:'🏅' }
+];
+
+const MEDALS = [
+  { id:'total_100', name:'青铜兔', desc:'累计锻炼100次', icon:'🥉', threshold:100 },
+  { id:'total_500', name:'白银兔', desc:'累计锻炼500次', icon:'🥈', threshold:500 },
+  { id:'total_1000', name:'黄金兔', desc:'累计锻炼1000次', icon:'🥇', threshold:1000 },
+  { id:'total_2000', name:'钻石兔', desc:'累计锻炼2000次', icon:'💎', threshold:2000 },
+  { id:'total_5000', name:'烈焰兔', desc:'累计锻炼5000次', icon:'🔥', threshold:5000 },
+  { id:'total_10000', name:'满级兔', desc:'累计锻炼10000次', icon:'👑', threshold:10000 },
+  { id:'single_1000', name:'闪电兔', desc:'任一项目突破1000次', icon:'⚡', threshold:1000, type:'single' },
+  { id:'all_100', name:'全能兔', desc:'所有项目均达100次', icon:'🏆', type:'all' },
+  { id:'streak_30', name:'打卡兔', desc:'连续30天锻炼', icon:'📅', type:'streak', threshold:30 },
+  { id:'cal_1000', name:'燃烧兔', desc:'单日消耗超1000大卡', icon:'🔥', type:'cal', threshold:1000 }
+];
+
+// ===================== MET CALC =====================
+const MET_VALUES = {
+  dumbbell:5.0, bulgarian_squat:6.0, plank:3.5, pushup:4.0,
+  pullup:5.5, squat:5.0, situp:3.0, running:8.0, jumping_jack:6.0, other:4.0
+};
+
+function calcCalories(exercise, weight, durationMin) {
+  const met = MET_VALUES[exercise] || 4.0;
+  const w = weight || 60;
+  return Math.round(met * w * (durationMin / 60));
+}
+
+function calcCalFromReps(exercise, reps, weightKg) {
+  // Approximate: each rep ~0.5 MET-min for typical exercises
+  const met = MET_VALUES[exercise] || 4.0;
+  const w = weightKg || 60;
+  // Convert reps to approximate minutes (60 reps ~ 1 min for most exercises)
+  const estMin = reps / 60;
+  return Math.max(1, Math.round(met * w * (estMin / 60)));
+}
+
+// ===================== NAVIGATION =====================
+const PAGE_TITLES = {
+  home:'呆兔要变生猛兔', record:'📝 记录锻炼', stopwatch:'⏱️ 秒表',
+  stats:'📊 数据统计', medal:'🏅 勋章墙', profile:'👤 个人中心'
+};
+
+function navigateTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const target = document.getElementById('page-'+page);
+  if(target) target.classList.add('active');
+  const navBtn = document.querySelector(`.nav-item[data-page="${page}"]`);
+  if(navBtn) navBtn.classList.add('active');
+  document.getElementById('pageTitle').textContent = PAGE_TITLES[page] || '呆兔要变生猛兔';
+  document.getElementById('pagesContainer').scrollTop = 0;
+  // Refresh data on page show
+  if(page==='home') renderHome();
+  if(page==='medal') renderMedals();
+  if(page==='stats') renderStats('day');
+  if(page==='profile') renderProfile();
+  if(page==='record') initRecordPage();
+}
+
+// ===================== TOAST =====================
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2000);
+}
+
+// ===================== SPLASH INIT =====================
+let splashTimeout = setTimeout(() => {
+  document.getElementById('splash').style.display='none';
+  document.getElementById('app').classList.add('show');
+  // Init
+  document.getElementById('recordDate').valueAsDate = new Date();
+  renderHome();
+  initRecordPage();
+  updateReminder();
+}, 2900);
+
+// Tap to skip splash
+document.getElementById('splash').addEventListener('click', function() {
+  clearTimeout(splashTimeout);
+  this.style.display='none';
+  document.getElementById('app').classList.add('show');
+  document.getElementById('recordDate').valueAsDate = new Date();
+  renderHome();
+  initRecordPage();
+  updateReminder();
+});
+
+// ===================== HOME =====================
+function renderHome() {
+  const db = getDB();
+  const today = new Date().toISOString().slice(0,10);
+  const todayRecords = db.records.filter(r => r.date === today);
+  const allRecords = db.records.sort((a,b) => b.createdAt - a.createdAt);
+  const todayBody = db.bodyRecords.filter(b => b.date === today);
+  const lastBody = db.bodyRecords.sort((a,b)=>b.date.localeCompare(a.date))[0];
+
+  // --- Overview Hero ---
+  const totalCal = todayRecords.reduce((s,r) => s + (r.calories||0), 0);
+  const totalReps = todayRecords.reduce((s,r) => s + (r.reps||0), 0);
+
+  document.getElementById('todayOverview').innerHTML = `
+    <div class="card" style="background:linear-gradient(135deg,var(--primary),#8B83E0);color:#fff;border:none;padding:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:15px;opacity:0.9">🐰 今天 · ${today}</div>
+          <div style="font-size:36px;font-weight:800;margin:8px 0;letter-spacing:-0.5px">
+            ${todayRecords.length > 0 ? todayRecords.length+' 项运动' : '还没动起来！'}
+          </div>
+          <div style="display:flex;gap:20px;font-size:14px;opacity:0.85">
+            <span>🔥 ${totalCal} 大卡</span>
+            <span>💪 ${totalReps} 次</span>
+          </div>
+        </div>
+        <div style="font-size:64px;opacity:0.3">🏋️</div>
+      </div>
+    </div>
+  `;
+
+  // --- Today Exercises List ---
+  const todayCard = document.getElementById('todayExercisesCard');
+  const todayList = document.getElementById('todayExerciseList');
+  if(todayRecords.length > 0) {
+    todayCard.style.display = 'block';
+    todayList.innerHTML = todayRecords.map((r, i) => {
+      const ex = EXERCISES.find(e => e.id === r.exercise);
+      const icon = ex ? ex.icon : '🏅';
+      const detail = r.sets ? `${r.sets}组×${r.reps}次` : (r.duration ? `${r.duration}秒` : `${r.reps}次`);
+      const w = r.weight ? ` · ${r.weight}kg` : '';
+      return `
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;${i<todayRecords.length-1?'border-bottom:1px solid var(--border)':''}">
+          <span style="font-size:28px;width:36px;text-align:center">${icon}</span>
+          <div style="flex:1">
+            <div style="font-size:15px;font-weight:600">${r.exerciseName}</div>
+            <div style="font-size:12px;color:var(--text-muted)">${detail}${w}</div>
+          </div>
+          <span style="font-size:15px;font-weight:700;color:var(--amber)">${r.calories||0}🔥</span>
+          ${r.feeling ? `<span style="font-size:14px" title="${r.feeling}">💬</span>` : ''}
+        </div>
+      `;
+    }).join('');
+  } else {
+    todayCard.style.display = 'none';
+  }
+
+  // --- Stats Bar ---
+  // Streak
+  const dates = [...new Set(db.records.map(r=>r.date))].sort().reverse();
+  let streak = 0;
+  for(let i=0; i<dates.length; i++) {
+    if(i===0) { streak=1; continue; }
+    const diff = (new Date(dates[i-1]) - new Date(dates[i])) / 86400000;
+    if(diff === 1) streak++;
+    else break;
+  }
+  // Month count
+  const month = today.slice(0,7);
+  const monthCount = db.records.filter(r => r.date.startsWith(month)).length;
+  // Total calories
+  const totalCalAll = db.records.reduce((s,r) => s+(r.calories||0), 0);
+
+  document.getElementById('homeStreak').textContent = streak + '天';
+  document.getElementById('homeMonth').textContent = monthCount + '次';
+  document.getElementById('homeTotalCal').textContent = totalCalAll;
+
+  // --- Recent Workouts ---
+  const recent = allRecords.slice(0, 8);
+  document.getElementById('recentWorkouts').innerHTML = recent.length === 0
+    ? '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px">还没有记录，开始你的第一次锻炼吧！💪</div>'
+    : recent.map(r => {
+        const ex = EXERCISES.find(e => e.id === r.exercise);
+        const icon = ex ? ex.icon : '🏅';
+        const isToday = r.date === today;
+        return `
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+            <span style="font-size:22px;width:32px;text-align:center">${icon}</span>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:6px">
+                <span style="font-size:13px;font-weight:600">${r.exerciseName}</span>
+                ${isToday ? '<span style="font-size:10px;background:var(--green-light);color:var(--green);padding:1px 6px;border-radius:4px;font-weight:600">今天</span>' : ''}
+              </div>
+              <div style="font-size:11px;color:var(--text-muted)">${r.date} · ${r.calories||0}大卡</div>
+            </div>
+            <span style="font-size:12px;color:var(--text-light)">${r.reps||''}${r.sets?'×'+r.sets:''}</span>
+          </div>
+        `;
+      }).join('');
+
+  // --- Body Data ---
+  if(lastBody) {
+    document.getElementById('homeBodyData').innerHTML = `
+      <div style="flex:1;text-align:center;padding:12px;background:var(--bg);border-radius:10px">
+        <div style="font-size:24px;font-weight:700;color:var(--primary-dark)">${lastBody.weight||'--'}</div>
+        <div style="font-size:11px;color:var(--text-muted)">体重 kg</div>
+      </div>
+      <div style="flex:1;text-align:center;padding:12px;background:var(--bg);border-radius:10px">
+        <div style="font-size:24px;font-weight:700;color:var(--accent)">${lastBody.bodyFat||'--'}</div>
+        <div style="font-size:11px;color:var(--text-muted)">体脂率 %</div>
+      </div>
+      <div style="flex:1;text-align:center;padding:12px;background:var(--bg);border-radius:10px">
+        <div style="font-size:24px;font-weight:700;color:var(--green)">${lastBody.date.slice(5)}</div>
+        <div style="font-size:11px;color:var(--text-muted)">最近记录</div>
+      </div>
+    `;
+  } else {
+    document.getElementById('homeBodyData').innerHTML = `
+      <div style="flex:1;text-align:center;padding:16px;color:var(--text-muted);font-size:13px">
+        还没有身体数据，快去记录吧！🐰
+        <button class="btn btn-sm btn-outline" onclick="navigateTo('profile')" style="margin-top:8px;display:inline-flex">⚖️ 去记录</button>
+      </div>
+    `;
+  }
+
+  // --- Week Chart ---
+  renderWeekChart();
+
+  // --- Reminder ---
+  if(todayBody.length === 0 && todayRecords.length > 0) {
+    document.getElementById('reminderBanner').innerHTML = `
+      <div class="reminder-banner">
+        <div class="icon">⚖️</div>
+        <div class="text">锻炼完了！今天还没记录体重和体脂哦 🐰</div>
+        <button class="btn btn-sm btn-primary" onclick="navigateTo('profile')">去记录</button>
+      </div>
+    `;
+  } else {
+    document.getElementById('reminderBanner').innerHTML = '';
+  }
+}
+
+function renderWeekChart() {
+  const db = getDB();
+  const canvas = document.getElementById('weekChartCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * 2;
+  canvas.height = rect.height * 2;
+  const w = canvas.width, h = canvas.height;
+  ctx.scale(2,2);
+  const W = w/2, H = h/2;
+
+  ctx.clearRect(0,0,W,H);
+
+  // Get last 7 days
+  const days = [];
+  for(let i=6; i>=0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate()-i);
+    const ds = d.toISOString().slice(0,10);
+    const cal = db.records.filter(r => r.date===ds).reduce((s,r) => s+(r.calories||0),0);
+    const label = '周' + ['日','一','二','三','四','五','六'][d.getDay()];
+    days.push({ date:ds, cal, label });
+  }
+  const maxCal = Math.max(...days.map(d=>d.cal), 100);
+  const pad = {t:20,b:20,l:30,r:10};
+  const chartW = W - pad.l - pad.r;
+  const chartH = H - pad.t - pad.b;
+  const barW = chartW / days.length * 0.6;
+  const gap = chartW / days.length;
+
+  // Draw bars
+  days.forEach((d,i) => {
+    const x = pad.l + i * gap + (gap-barW)/2;
+    const barH = (d.cal / maxCal) * chartH;
+    const y = pad.t + chartH - barH;
+    // Bar
+    ctx.fillStyle = d.cal > 0 ? '#7F77DD' : '#E8E7EE';
+    ctx.beginPath();
+    ctx.roundRect(x, y, barW, barH, [4,4,0,0]);
+    ctx.fill();
+    // Label
+    ctx.fillStyle = '#888780';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(d.label, pad.l + i*gap + gap/2, H - 5);
+    // Value
+    if(d.cal > 0) {
+      ctx.fillStyle = '#534AB7';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.fillText(d.cal+'', pad.l + i*gap + gap/2, y-5);
+    }
+  });
+}
+
+// ===================== RECORD =====================
+let selectedExercise = null;
+
+function initRecordPage() {
+  const grid = document.getElementById('exerciseGrid');
+  grid.innerHTML = EXERCISES.map(ex => `
+    <button class="exercise-btn" data-id="${ex.id}" onclick="selectExercise('${ex.id}')">
+      <span class="ex-icon">${ex.icon}</span>
+      <span class="ex-name">${ex.name}</span>
+    </button>
+  `).join('');
+  selectedExercise = null;
+  document.getElementById('recordInputCard').style.display = 'none';
+}
+
+function selectExercise(id) {
+  document.querySelectorAll('.exercise-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector(`.exercise-btn[data-id="${id}"]`).classList.add('selected');
+  selectedExercise = EXERCISES.find(e => e.id === id);
+  document.getElementById('recordInputCard').style.display = 'block';
+  renderRecordInputs();
+}
+
+function renderRecordInputs() {
+  const ex = selectedExercise;
+  if(!ex) return;
+  const container = document.getElementById('recordInputs');
+  let html = '';
+
+  if(ex.type === 'weight_reps') {
+    html = `
+      <div class="input-row">
+        <div class="form-group"><label class="form-label">组数</label><input type="number" class="form-input" id="rSets" value="3" min="1"></div>
+        <div class="form-group"><label class="form-label">每组次数</label><input type="number" class="form-input" id="rReps" value="12" min="1"></div>
+        <div class="form-group"><label class="form-label">重量(${ex.unit||'kg'})</label><input type="number" class="form-input" id="rWeight" value="5" min="0" step="0.5"></div>
+      </div>
+    `;
+  } else if(ex.type === 'reps') {
+    html = `
+      <div class="input-row">
+        <div class="form-group"><label class="form-label">组数</label><input type="number" class="form-input" id="rSets" value="3" min="1"></div>
+        <div class="form-group"><label class="form-label">每组次数</label><input type="number" class="form-input" id="rReps" value="15" min="1"></div>
+      </div>
+    `;
+  } else if(ex.type === 'timed') {
+    html = `
+      <div class="input-row">
+        <div class="form-group"><label class="form-label">时长(秒)</label><input type="number" class="form-input" id="rDuration" value="60" min="1"></div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="navigateTo('stopwatch')" style="font-size:12px">⏱️ 用秒表计时</button>
+    `;
+  }
+  html += `<div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+    <label style="font-size:12px;color:var(--text-muted)">体重(kg):</label>
+    <input type="number" class="form-input" id="rUserWeight" value="60" style="width:80px;padding:6px 8px;font-size:14px" step="0.1">
+  </div>`;
+  container.innerHTML = html;
+  updateCalEstimate();
+  // Listen for changes
+  container.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', updateCalEstimate);
+  });
+}
+
+function updateCalEstimate() {
+  const ex = selectedExercise;
+  if(!ex) return;
+  const calDiv = document.getElementById('calEstimate');
+  let cal = 0;
+  const weight = parseFloat(document.getElementById('rUserWeight')?.value) || 60;
+
+  if(ex.type === 'weight_reps' || ex.type === 'reps') {
+    const sets = parseInt(document.getElementById('rSets')?.value) || 0;
+    const reps = parseInt(document.getElementById('rReps')?.value) || 0;
+    const totalReps = sets * reps;
+    cal = calcCalFromReps(ex.id, totalReps, weight);
+  } else if(ex.type === 'timed') {
+    const dur = parseInt(document.getElementById('rDuration')?.value) || 0;
+    cal = calcCalories(ex.id, weight, dur);
+  }
+
+  if(cal > 0) {
+    calDiv.style.display = 'flex';
+    calDiv.innerHTML = `
+      <div class="cal-num">${cal}</div>
+      <div class="cal-unit">大卡<br><span style="font-size:11px">预计消耗</span></div>
+    `;
+  } else {
+    calDiv.style.display = 'none';
+  }
+  return cal;
+}
+
+function saveRecord() {
+  const ex = selectedExercise;
+  if(!ex) { showToast('请先选择运动项目'); return; }
+  const date = document.getElementById('recordDate').value;
+  const weight = parseFloat(document.getElementById('rUserWeight')?.value) || 60;
+  let sets=0, reps=0, duration=0, totalReps=0, totalCal=0;
+
+  if(ex.type === 'weight_reps') {
+    sets = parseInt(document.getElementById('rSets')?.value) || 0;
+    reps = parseInt(document.getElementById('rReps')?.value) || 0;
+    totalReps = sets * reps;
+    totalCal = calcCalFromReps(ex.id, totalReps, weight);
+  } else if(ex.type === 'reps') {
+    sets = parseInt(document.getElementById('rSets')?.value) || 0;
+    reps = parseInt(document.getElementById('rReps')?.value) || 0;
+    totalReps = sets * reps;
+    totalCal = calcCalFromReps(ex.id, totalReps, weight);
+  } else if(ex.type === 'timed') {
+    duration = parseInt(document.getElementById('rDuration')?.value) || 0;
+    totalCal = calcCalories(ex.id, weight, duration);
+  }
+
+  const feeling = document.getElementById('feelingInput').value.trim();
+
+  const record = {
+    id: Date.now() + Math.random()*1000 | 0,
+    date,
+    exercise: ex.id,
+    exerciseName: ex.name,
+    sets,
+    reps: totalReps || reps,
+    weight: ex.type==='weight_reps' ? (parseFloat(document.getElementById('rWeight')?.value)||0) : 0,
+    duration,
+    calories: totalCal,
+    feeling,
+    createdAt: Date.now()
+  };
+
+  const db = getDB();
+  db.records.push(record);
+  saveDB(db);
+  autoBackup(db, '锻炼记录');
+
+  // Auto-download backup every 5 records
+  if(db.records.length % 5 === 0) {
+    setTimeout(() => autoDownloadBackup(), 500);
+  }
+
+  showToast(`✅ ${ex.name} 记录成功！消耗 ${totalCal} 大卡`);
+  document.getElementById('feelingInput').value = '';
+
+  // Check for reminders
+  const today = new Date().toISOString().slice(0,10);
+  const hasBody = db.bodyRecords.some(b => b.date === today);
+  if(!hasBody) {
+    setTimeout(() => {
+      if(confirm('锻炼完了！现在就记录今天的体重和体脂吗？')) {
+        navigateTo('profile');
+      }
+    }, 500);
+  }
+
+  // Check medals
+  checkMedals();
+}
+
+// ===================== STOPWATCH =====================
+let swRunning = false;
+let swTime = 0; // seconds
+let swInterval = null;
+let swCallback = null;
+
+function swStart() {
+  if(swRunning) return;
+  swRunning = true;
+  document.getElementById('swStartBtn').style.display = 'none';
+  document.getElementById('swPauseBtn').style.display = 'flex';
+  const start = Date.now() - swTime * 1000;
+  swInterval = setInterval(() => {
+    swTime = (Date.now() - start) / 1000;
+    updateStopwatchDisplay();
+  }, 100);
+}
+
+function swPause() {
+  swRunning = false;
+  clearInterval(swInterval);
+  document.getElementById('swStartBtn').style.display = 'flex';
+  document.getElementById('swPauseBtn').style.display = 'none';
+}
+
+function swReset() {
+  swRunning = false;
+  clearInterval(swInterval);
+  swTime = 0;
+  document.getElementById('swStartBtn').style.display = 'flex';
+  document.getElementById('swPauseBtn').style.display = 'none';
+  updateStopwatchDisplay();
+}
+
+function swDone() {
+  if(swTime < 1) { showToast('请先计时'); return; }
+  const secs = Math.round(swTime);
+  swReset();
+  // Navigate to record and fill duration
+  navigateTo('record');
+  const durInput = document.getElementById('rDuration');
+  if(durInput) {
+    durInput.value = secs;
+    updateCalEstimate();
+    showToast(`⏱️ 已记录 ${secs} 秒`);
+  }
+}
+
+function updateStopwatchDisplay() {
+  const mins = Math.floor(swTime / 60);
+  const secs = Math.floor(swTime % 60);
+  const tenths = Math.floor((swTime % 1) * 10);
+  document.getElementById('stopwatchDisplay').textContent =
+    `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}.${tenths}`;
+}
+
+// ===================== STATS =====================
+let currentStatsPeriod = 'day';
+
+function renderStats(period) {
+  currentStatsPeriod = period;
+  document.querySelectorAll('.stats-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.stats-tab[data-period="${period}"]`).classList.add('active');
+  const db = getDB();
+  const now = new Date();
+  let filtered = [];
+
+  switch(period) {
+    case 'day': {
+      const ds = now.toISOString().slice(0,10);
+      filtered = db.records.filter(r => r.date === ds);
+      break;
+    }
+    case 'week': {
+      const start = new Date(now);
+      start.setDate(start.getDate() - start.getDay());
+      const startStr = start.toISOString().slice(0,10);
+      filtered = db.records.filter(r => r.date >= startStr && r.date <= now.toISOString().slice(0,10));
+      break;
+    }
+    case 'month': {
+      const m = String(now.getMonth()+1).padStart(2,'0');
+      filtered = db.records.filter(r => r.date.startsWith(now.getFullYear()+'-'+m));
+      break;
+    }
+    case 'year': {
+      filtered = db.records.filter(r => r.date.startsWith(String(now.getFullYear())));
+      break;
+    }
+  }
+
+  const totalCal = filtered.reduce((s,r) => s+(r.calories||0),0);
+  const totalCount = filtered.length;
+  const uniqueDays = new Set(filtered.map(r=>r.date)).size;
+
+  document.getElementById('statCount').textContent = totalCount;
+  document.getElementById('statCal').textContent = totalCal;
+  document.getElementById('statDuration').textContent = uniqueDays + '天';
+
+  renderFreqChart(filtered, period);
+  renderWeightChart(period);
+  renderExerciseRanking(filtered);
+}
+
+function renderFreqChart(records, period) {
+  const canvas = document.getElementById('freqCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * 2;
+  canvas.height = rect.height * 2;
+  ctx.scale(2,2);
+  const W = canvas.width/2, H = canvas.height/2;
+  ctx.clearRect(0,0,W,H);
+
+  let labels = [], data = [];
+  const now = new Date();
+
+  if(period === 'day') {
+    // By exercise type
+    const map = {};
+    records.forEach(r => { map[r.exerciseName] = (map[r.exerciseName]||0) + 1; });
+    labels = Object.keys(map);
+    data = Object.values(map);
+  } else if(period === 'week') {
+    // By day of week
+    for(let i=6; i>=0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const ds = d.toISOString().slice(0,10);
+      const cnt = records.filter(r=>r.date===ds).length;
+      labels.push('周'+['日','一','二','三','四','五','六'][d.getDay()]);
+      data.push(cnt);
+    }
+  } else if(period === 'month') {
+    // By week of month
+    const weeks = {};
+    records.forEach(r => {
+      const day = parseInt(r.date.slice(8,10));
+      const week = Math.ceil(day / 7);
+      weeks[week] = (weeks[week]||0) + 1;
+    });
+    for(let i=1; i<=4; i++) {
+      labels.push('第'+i+'周');
+      data.push(weeks[i]||0);
+    }
+  } else {
+    // By month
+    for(let i=1; i<=12; i++) {
+      const m = String(i).padStart(2,'0');
+      const cnt = records.filter(r=>r.date.slice(5,7)===m).length;
+      labels.push(i+'月');
+      data.push(cnt);
+    }
+  }
+
+  if(data.length === 0) { ctx.fillStyle='#888780'; ctx.font='13px sans-serif'; ctx.textAlign='center'; ctx.fillText('暂无数据',W/2,H/2); return; }
+
+  const max = Math.max(...data, 1);
+  const pad = {t:20,b:20,l:25,r:10};
+  const chartW = W-pad.l-pad.r, chartH = H-pad.t-pad.b;
+  const gap = labels.length > 1 ? chartW / (labels.length) : chartW/2;
+  const barW = Math.min(gap * 0.6, 30);
+
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'center';
+
+  data.forEach((v,i) => {
+    const x = pad.l + i * gap + (gap-barW)/2 + (labels.length===1 ? gap/2 : 0);
+    const barH = (v/max) * chartH;
+    const y = pad.t + chartH - barH;
+    ctx.fillStyle = '#AFA9EC';
+    ctx.beginPath();
+    ctx.roundRect(x, y, barW, barH, [4,4,0,0]);
+    ctx.fill();
+    ctx.fillStyle = v > 0 ? '#534AB7' : '#888780';
+    ctx.fillText(v+'', x+barW/2, y-5);
+    ctx.fillStyle = '#888780';
+    ctx.fillText(labels[i]||'', x+barW/2, H-5);
+  });
+}
+
+function renderWeightChart(period) {
+  const canvas = document.getElementById('weightCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * 2;
+  canvas.height = rect.height * 2;
+  ctx.scale(2,2);
+  const W = canvas.width/2, H = canvas.height/2;
+  ctx.clearRect(0,0,W,H);
+
+  const db = getDB();
+  let records = db.bodyRecords.sort((a,b)=>a.date.localeCompare(b.date));
+  if(records.length < 2) {
+    ctx.fillStyle='#888780'; ctx.font='13px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('需要至少2次记录才能显示趋势',W/2,H/2);
+    return;
+  }
+
+  // Filter by period
+  const now = new Date();
+  let filtered = records;
+  if(period === 'week') {
+    const start = new Date(now); start.setDate(start.getDate()-7);
+    filtered = records.filter(r => r.date >= start.toISOString().slice(0,10));
+  } else if(period === 'month') {
+    const m = now.toISOString().slice(0,7);
+    filtered = records.filter(r => r.date.startsWith(m));
+  }
+
+  if(filtered.length < 2) filtered = records.slice(-5);
+
+  const weights = filtered.map(r => r.weight);
+  const labels = filtered.map(r => r.date.slice(5));
+  const min = Math.min(...weights) - 1;
+  const max = Math.max(...weights) + 1;
+  const range = max - min || 1;
+  const pad = {t:20,b:25,l:35,r:10};
+  const chartW = W-pad.l-pad.r, chartH = H-pad.t-pad.b;
+
+  // Line
+  ctx.beginPath();
+  ctx.strokeStyle = '#7F77DD';
+  ctx.lineWidth = 2;
+  filtered.forEach((r,i) => {
+    const x = pad.l + (i/(filtered.length-1))*chartW;
+    const y = pad.t + chartH - ((r.weight-min)/range)*chartH;
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  // Points
+  filtered.forEach((r,i) => {
+    const x = pad.l + (i/(filtered.length-1))*chartW;
+    const y = pad.t + chartH - ((r.weight-min)/range)*chartH;
+    ctx.beginPath();
+    ctx.arc(x,y,4,0,Math.PI*2);
+    ctx.fillStyle = '#534AB7';
+    ctx.fill();
+    ctx.fillStyle = '#888780';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(r.weight+'', x, y-10);
+    ctx.fillStyle = '#B4B2A9';
+    ctx.font = '10px sans-serif';
+    ctx.fillText(labels[i]||'', x, H-5);
+  });
+
+  ctx.fillStyle = '#888780';
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText(max.toFixed(1), pad.l-5, pad.t+12);
+  ctx.fillText(min.toFixed(1), pad.l-5, H-pad.b-5);
+}
+
+function renderExerciseRanking(records) {
+  const map = {};
+  records.forEach(r => {
+    if(!map[r.exerciseName]) map[r.exerciseName] = { count:0, cal:0, icon: EXERCISES.find(e=>e.id===r.exercise)?.icon||'🏅' };
+    map[r.exerciseName].count++;
+    map[r.exerciseName].cal += (r.calories||0);
+  });
+  const sorted = Object.entries(map).sort((a,b) => b[1].count - a[1].count);
+  if(sorted.length === 0) {
+    document.getElementById('exerciseRanking').innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">暂无数据</div>';
+    return;
+  }
+  document.getElementById('exerciseRanking').innerHTML = sorted.map(([name, data], i) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:14px;font-weight:600;color:var(--text-muted);width:24px">#${i+1}</span>
+      <span style="font-size:20px">${data.icon}</span>
+      <span style="flex:1;font-size:13px;font-weight:500">${name}</span>
+      <span style="font-size:12px;color:var(--text-muted)">${data.count}次</span>
+      <span style="font-size:12px;color:var(--amber)">${data.cal}大卡</span>
+    </div>
+  `).join('');
+}
+
+// ===================== MEDALS =====================
+function getMedalStatus() {
+  const db = getDB();
+  const status = {};
+
+  MEDALS.forEach(m => {
+    status[m.id] = { achieved: false, current: 0, achievedDate: null };
+  });
+
+  // Total count
+  const totalRecords = db.records.length;
+  MEDALS.filter(m => m.id.startsWith('total_')).forEach(m => {
+    const threshold = m.threshold;
+    if(totalRecords >= threshold) {
+      status[m.id] = { achieved: true, current: totalRecords, achievedDate: '--' };
+    } else {
+      status[m.id] = { achieved: false, current: totalRecords, achievedDate: null };
+    }
+  });
+
+  // Single exercise 1000
+  const exCounts = {};
+  db.records.forEach(r => {
+    exCounts[r.exercise] = (exCounts[r.exercise]||0) + (r.reps||1);
+  });
+  const single1000 = Object.values(exCounts).some(c => c >= 1000);
+  const bestSingle = Math.max(...Object.values(exCounts), 0);
+  if(single1000) status['single_1000'] = { achieved: true, current: bestSingle, achievedDate: '--' };
+  else status['single_1000'] = { achieved: false, current: bestSingle, achievedDate: null };
+
+  // All 100
+  const allExNames = EXERCISES.map(e=>e.name);
+  const exByName = {};
+  db.records.forEach(r => { exByName[r.exerciseName] = (exByName[r.exerciseName]||0) + (r.reps||1); });
+  const allExDone = allExNames.filter(n => (exByName[n]||0) >= 100).length;
+  const allExTotal = allExNames.length;
+  status['all_100'] = { achieved: allExDone >= allExTotal, current: allExDone, achievedDate: null };
+
+  // Streak 30
+  const dates = [...new Set(db.records.map(r=>r.date))].sort();
+  let maxStreak = 0, curStreak = 0;
+  for(let i=0; i<dates.length; i++) {
+    if(i===0) { curStreak=1; continue; }
+    const diff = (new Date(dates[i]) - new Date(dates[i-1])) / 86400000;
+    if(diff === 1) curStreak++;
+    else { maxStreak = Math.max(maxStreak, curStreak); curStreak=1; }
+  }
+  maxStreak = Math.max(maxStreak, curStreak);
+  status['streak_30'] = { achieved: maxStreak >= 30, current: maxStreak, achievedDate: null };
+
+  // Cal 1000
+  const dayCals = {};
+  db.records.forEach(r => { dayCals[r.date] = (dayCals[r.date]||0) + (r.calories||0); });
+  const hasCal1000 = Object.values(dayCals).some(c => c >= 1000);
+  const bestCal = Math.max(...Object.values(dayCals), 0);
+  status['cal_1000'] = { achieved: hasCal1000, current: bestCal, achievedDate: null };
+
+  return status;
+}
+
+function renderMedals() {
+  const status = getMedalStatus();
+  const achieved = Object.values(status).filter(s => s.achieved).length;
+  document.getElementById('medalSummary').textContent = `已获得 ${achieved} / ${MEDALS.length} 枚勋章`;
+
+  const TIERS = [
+    {id:'total_100', tier:'bronze', label:'100', bg:'#FFF5E6', ring:'#CD7F32', glow:'rgba(205,127,50,0.4)', color:'#8B5E3C'},
+    {id:'total_500', tier:'silver', label:'500', bg:'#F0F0F5', ring:'#A8A8C0', glow:'rgba(168,168,192,0.4)', color:'#707080'},
+    {id:'total_1000', tier:'gold', label:'1K', bg:'#FFFDE6', ring:'#FFD700', glow:'rgba(255,215,0,0.5)', color:'#B8860B'},
+    {id:'total_2000', tier:'diamond', label:'2K', bg:'#E6F7FF', ring:'#38BDF8', glow:'rgba(56,189,248,0.4)', color:'#0369A1'},
+    {id:'total_5000', tier:'flame', label:'5K', bg:'#FFF0E6', ring:'#FF6B35', glow:'rgba(255,107,53,0.4)', color:'#C2410C'},
+    {id:'total_10000', tier:'king', label:'10K', bg:'#FFFBEB', ring:'#F59E0B', glow:'rgba(245,158,11,0.5)', color:'#B45309'},
+    {id:'single_1000', tier:'lightning', label:'⚡1K', bg:'#F3E8FF', ring:'#A855F7', glow:'rgba(168,85,247,0.4)', color:'#7E22CE'},
+    {id:'all_100', tier:'all', label:'🏆全', bg:'#FCE7F3', ring:'#EC4899', glow:'rgba(236,72,153,0.4)', color:'#BE185D'},
+    {id:'streak_30', tier:'streak', label:'30天', bg:'#ECFDF5', ring:'#10B981', glow:'rgba(16,185,129,0.4)', color:'#047857'},
+    {id:'cal_1000', tier:'burn', label:'🔥1K', bg:'#FEF2F2', ring:'#EF4444', glow:'rgba(239,68,68,0.4)', color:'#B91C1C'}
+  ];
+
+  const RABBIT_SVG = {
+    bronze: `<svg viewBox="0 0 40 40"><circle cx="20" cy="12" r="9" fill="#D4A574"/><circle cx="5" cy="20" r="12" fill="#C89565"/><ellipse cx="16" cy="4" rx="3" ry="7" fill="#D4A574" transform="rotate(-15,16,4)"/><ellipse cx="24" cy="4" rx="3" ry="7" fill="#D4A574" transform="rotate(15,24,4)"/><circle cx="18" cy="10" r="2" fill="#8B5E3C"/><circle cx="22" cy="10" r="2" fill="#8B5E3C"/><path d="M18 14 Q20 16 22 14" fill="none" stroke="#8B5E3C" stroke-width="1" stroke-linecap="round"/><path d="M10 28 Q14 26 20 28 Q26 26 30 28" fill="none" stroke="#C89565" stroke-width="4" stroke-linecap="round"/><rect x="14" y="19" width="12" height="11" rx="3" fill="#C89565"/><rect x="15" y="20" width="3" height="3" rx="1" fill="#B8845A"/><rect x="22" y="20" width="3" height="3" rx="1" fill="#B8845A"/></svg>`,
+    silver: `<svg viewBox="0 0 40 40"><circle cx="20" cy="12" r="9" fill="#E8E8F0"/><circle cx="5" cy="20" r="12" fill="#D0D0DD"/><ellipse cx="16" cy="4" rx="3" ry="7" fill="#E8E8F0" transform="rotate(-15,16,4)"/><ellipse cx="24" cy="4" rx="3" ry="7" fill="#E8E8F0" transform="rotate(15,24,4)"/><circle cx="18" cy="10" r="2" fill="#707080"/><circle cx="22" cy="10" r="2" fill="#707080"/><path d="M18 14 Q20 16 22 14" fill="none" stroke="#707080" stroke-width="1" stroke-linecap="round"/><path d="M10 28 Q14 26 20 28 Q26 26 30 28" fill="none" stroke="#D0D0DD" stroke-width="4" stroke-linecap="round"/><rect x="30" y="16" width="3" height="12" rx="1.5" fill="#B0B0C0"/><circle cx="31" cy="14" r="3" fill="#C0C0D0"/></svg>`,
+    gold: `<svg viewBox="0 0 40 40"><circle cx="20" cy="12" r="9" fill="#FFE680"/><circle cx="5" cy="20" r="12" fill="#FFD700"/><ellipse cx="16" cy="4" rx="3" ry="7" fill="#FFE680" transform="rotate(-15,16,4)"/><ellipse cx="24" cy="4" rx="3" ry="7" fill="#FFE680" transform="rotate(15,24,4)"/><circle cx="18" cy="10" r="2" fill="#B8860B"/><circle cx="22" cy="10" r="2" fill="#B8860B"/><path d="M18 14 Q20 16 22 14" fill="none" stroke="#B8860B" stroke-width="1" stroke-linecap="round"/><path d="M10 28 Q14 26 20 28 Q26 26 30 28" fill="none" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/><path d="M12 17 Q15 14 18 17" fill="none" stroke="#B8860B" stroke-width="1.5"/><path d="M22 17 Q25 14 28 17" fill="none" stroke="#B8860B" stroke-width="1.5"/></svg>`,
+    diamond: `<svg viewBox="0 0 40 40"><circle cx="20" cy="12" r="9" fill="#B5E8FF"/><circle cx="5" cy="20" r="12" fill="#7DD3FC"/><ellipse cx="16" cy="4" rx="3" ry="7" fill="#B5E8FF" transform="rotate(-15,16,4)"/><ellipse cx="24" cy="4" rx="3" ry="7" fill="#B5E8FF" transform="rotate(15,24,4)"/><circle cx="18" cy="10" r="2" fill="#0369A1"/><circle cx="22" cy="10" r="2" fill="#0369A1"/><path d="M18 14 Q20 16 22 14" fill="none" stroke="#0369A1" stroke-width="1" stroke-linecap="round"/><path d="M10 28 Q14 26 20 28 Q26 26 30 28" fill="none" stroke="#7DD3FC" stroke-width="4" stroke-linecap="round"/><polygon points="20,3 23,8 20,13 17,8" fill="#fff" opacity="0.6"/></svg>`,
+    flame: `<svg viewBox="0 0 40 40"><circle cx="20" cy="12" r="9" fill="#FFB088"/><circle cx="5" cy="20" r="12" fill="#FF8C42"/><ellipse cx="16" cy="4" rx="3" ry="7" fill="#FFB088" transform="rotate(-15,16,4)"/><ellipse cx="24" cy="4" rx="3" ry="7" fill="#FFB088" transform="rotate(15,24,4)"/><circle cx="18" cy="10" r="2" fill="#C2410C"/><circle cx="22" cy="10" r="2" fill="#C2410C"/><path d="M18 14 Q20 16 22 14" fill="none" stroke="#C2410C" stroke-width="1" stroke-linecap="round"/><path d="M10 28 Q14 26 20 28 Q26 26 30 28" fill="none" stroke="#FF8C42" stroke-width="4" stroke-linecap="round"/><path d="M12 8 Q14 2 16 8 Q18 4 20 10" fill="none" stroke="#FF4500" stroke-width="1"/></svg>`,
+    king: `<svg viewBox="0 0 40 40"><circle cx="20" cy="12" r="9" fill="#FFE680"/><circle cx="5" cy="20" r="12" fill="#F5C518"/><ellipse cx="16" cy="4" rx="3" ry="7" fill="#FFE680" transform="rotate(-15,16,4)"/><ellipse cx="24" cy="4" rx="3" ry="7" fill="#FFE680" transform="rotate(15,24,4)"/><circle cx="18" cy="10" r="2" fill="#B45309"/><circle cx="22" cy="10" r="2" fill="#B45309"/><path d="M18 14 Q20 16 22 14" fill="none" stroke="#B45309" stroke-width="1" stroke-linecap="round"/><path d="M10 28 Q14 26 20 28 Q26 26 30 28" fill="none" stroke="#F5C518" stroke-width="4" stroke-linecap="round"/><polygon points="20,1 22,6 18,6" fill="#FFD700"/><polygon points="20,3 23,8 17,8" fill="#FFED4A"/></svg>`,
+    lightning: `<svg viewBox="0 0 40 40"><circle cx="20" cy="12" r="9" fill="#D8B4FE"/><circle cx="5" cy="20" r="12" fill="#C084FC"/><ellipse cx="16" cy="4" rx="3" ry="7" fill="#D8B4FE" transform="rotate(-15,16,4)"/><ellipse cx="24" cy="4" rx="3" ry="7" fill="#D8B4FE" transform="rotate(15,24,4)"/><circle cx="18" cy="10" r="2" fill="#7E22CE"/><circle cx="22" cy="10" r="2" fill="#7E22CE"/><path d="M18 14 Q20 16 22 14" fill="none" stroke="#7E22CE" stroke-width="1" stroke-linecap="round"/><path d="M10 28 Q14 26 20 28 Q26 26 30 28" fill="none" stroke="#C084FC" stroke-width="4" stroke-linecap="round"/><polygon points="25,8 20,16 24,16 22,22 28,14 24,14" fill="#A020F0" opacity="0.7"/></svg>`,
+    all: `<svg viewBox="0 0 40 40"><circle cx="20" cy="12" r="9" fill="#F9A8D4"/><circle cx="5" cy="20" r="12" fill="#F472B6"/><ellipse cx="16" cy="4" rx="3" ry="7" fill="#F9A8D4" transform="rotate(-15,16,4)"/><ellipse cx="24" cy="4" rx="3" ry="7" fill="#F9A8D4" transform="rotate(15,24,4)"/><circle cx="18" cy="10" r="2" fill="#BE185D"/><circle cx="22" cy="10" r="2" fill="#BE185D"/><path d="M18 14 Q20 16 22 14" fill="none" stroke="#BE185D" stroke-width="1" stroke-linecap="round"/><path d="M10 28 Q14 26 20 28 Q26 26 30 28" fill="none" stroke="#F472B6" stroke-width="4" stroke-linecap="round"/><circle cx="15" cy="9" r="2" fill="#FFD700" opacity="0.6"/><circle cx="25" cy="9" r="2" fill="#38BDF8" opacity="0.6"/><circle cx="20" cy="6" r="2" fill="#10B981" opacity="0.6"/></svg>`,
+    streak: `<svg viewBox="0 0 40 40"><circle cx="20" cy="12" r="9" fill="#A7F3D0"/><circle cx="5" cy="20" r="12" fill="#6EE7B7"/><ellipse cx="16" cy="4" rx="3" ry="7" fill="#A7F3D0" transform="rotate(-15,16,4)"/><ellipse cx="24" cy="4" rx="3" ry="7" fill="#A7F3D0" transform="rotate(15,24,4)"/><circle cx="18" cy="10" r="2" fill="#047857"/><circle cx="22" cy="10" r="2" fill="#047857"/><path d="M18 14 Q20 16 22 14" fill="none" stroke="#047857" stroke-width="1" stroke-linecap="round"/><path d="M10 28 Q14 26 20 28 Q26 26 30 28" fill="none" stroke="#6EE7B7" stroke-width="4" stroke-linecap="round"/><rect x="17" y="6" width="2" height="8" rx="1" fill="#047857" opacity="0.5"/><rect x="21" y="8" width="2" height="6" rx="1" fill="#047857" opacity="0.5"/></svg>`,
+    burn: `<svg viewBox="0 0 40 40"><circle cx="20" cy="12" r="9" fill="#FCA5A5" opacity="0.9"/><circle cx="5" cy="20" r="12" fill="#F87171"/><ellipse cx="16" cy="4" rx="3" ry="7" fill="#FCA5A5" transform="rotate(-15,16,4)"/><ellipse cx="24" cy="4" rx="3" ry="7" fill="#FCA5A5" transform="rotate(15,24,4)"/><circle cx="18" cy="10" r="2" fill="#B91C1C"/><circle cx="22" cy="10" r="2" fill="#B91C1C"/><path d="M18 14 Q20 16 22 14" fill="none" stroke="#B91C1C" stroke-width="1" stroke-linecap="round"/><path d="M10 28 Q14 26 20 28 Q26 26 30 28" fill="none" stroke="#F87171" stroke-width="4" stroke-linecap="round"/><path d="M13 6 Q16 2 19 6 Q22 2 25 6" fill="none" stroke="#EF4444" stroke-width="1.5"/></svg>`
+  };
+
+  document.getElementById('medalGrid').innerHTML = MEDALS.map((m, i) => {
+    const s = status[m.id];
+    const cfg = TIERS[i] || TIERS[0];
+    const cls = s.achieved ? 'medal-item achieved' : 'medal-item locked';
+    const pct = m.threshold ? Math.min(100, (s.current/m.threshold)*100) : 50;
+    const progress = s.achieved ? '' : `<div class="medal-progress">${s.current}/${m.threshold||'∞'}</div><div class="medal-progress-bar"><div class="medal-progress-fill" style="width:${pct}%"></div></div>`;
+    const dateHtml = s.achieved ? `<div class="medal-date">🎉 已达成</div>` : '';
+    const rabbitSvg = RABBIT_SVG[cfg.tier] || RABBIT_SVG.bronze;
+
+    return `
+      <div class="${cls}" style="border-color:${cfg.ring};${s.achieved?`box-shadow:0 0 20px ${cfg.glow}`:''}">
+        <div class="medal-shine"></div>
+        <div class="medal-circle" style="border-color:${cfg.ring};${s.achieved?`box-shadow:0 0 12px ${cfg.glow}`:''}">
+          <div class="medal-bg" style="background:${cfg.bg}"></div>
+          ${s.achieved ? '' : '<div class="medal-lock">🔒</div>'}
+          <div class="medal-circle-inner" style="background:rgba(255,255,255,0.25)">
+            <div class="medal-rabbit-svg" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative">
+              ${rabbitSvg}
+              <span class="medal-label" style="position:absolute;bottom:2px;right:2px;font-size:7px;font-weight:700;color:${cfg.color};text-shadow:none;background:rgba(255,255,255,0.7);padding:0 3px;border-radius:3px">${cfg.label}</span>
+            </div>
+          </div>
+        </div>
+        <div class="medal-name" style="${s.achieved?'':`color:var(--text-muted)`}">${['🥉','🥈','🥇','💎','🔥','👑','⚡','🏆','📅','🔥'][i]} ${m.name}</div>
+        <div class="medal-desc">${m.desc}</div>
+        ${progress}
+        ${dateHtml}
+      </div>
+    `;
+  }).join('');
+}
+
+function checkMedals() {
+  renderMedals();
+  const status = getMedalStatus();
+  const justAchieved = MEDALS.filter(m => status[m.id].achieved);
+  justAchieved.forEach(m => {
+    const stored = JSON.parse(localStorage.getItem('datu_notified_medals')||'{}');
+    if(!stored[m.id]) {
+      stored[m.id] = true;
+      localStorage.setItem('datu_notified_medals', JSON.stringify(stored));
+      setTimeout(() => showToast(`🏅 获得勋章：${m.name}！`), 300);
+    }
+  });
+}
+
+// ===================== PROFILE =====================
+function renderProfile() {
+  const db = getDB();
+  const bodyRecords = db.bodyRecords.sort((a,b)=>b.date.localeCompare(a,b.date));
+  const last = bodyRecords[0];
+  const first = bodyRecords[bodyRecords.length-1];
+
+  document.getElementById('lastWeight').textContent = last ? last.weight : '--';
+  document.getElementById('lastBodyFat').textContent = last ? last.bodyFat : '--';
+  document.getElementById('startWeight').textContent = first ? first.weight : '--';
+  if(last && first && last.date !== first.date) {
+    const change = (last.weight - first.weight).toFixed(1);
+    document.getElementById('weightChange').textContent = (change > 0 ? '+' : '') + change;
+    document.getElementById('weightChange').style.color = change < 0 ? 'var(--green)' : 'var(--accent)';
+  } else {
+    document.getElementById('weightChange').textContent = '--';
+  }
+
+  // Feelings
+  const feelings = db.records.filter(r => r.feeling).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20);
+  if(feelings.length === 0) {
+    document.getElementById('feelingsList').innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px">还没有记录感受，开始锻炼吧！💪</div>';
+  } else {
+    document.getElementById('feelingsList').innerHTML = feelings.map(r => `
+      <div class="feeling-item">
+        <div class="date">${r.date} · ${r.exerciseName}</div>
+        <div class="text">${r.feeling}</div>
+      </div>
+    `).join('');
+  }
+
+  // Backup info
+  try {
+    const raw = localStorage.getItem(BACKUP_KEY);
+    if(raw) {
+      const bk = JSON.parse(raw);
+      const totalRecords = (bk.data?.records?.length||0) + (bk.data?.bodyRecords?.length||0);
+      const lastBackup = bk.backedUpDate||'未知';
+      document.getElementById('backupInfo').innerHTML = `✅ ${totalRecords}条 · 最后：${lastBackup.slice(5,16)}`;
+    } else {
+      document.getElementById('backupInfo').textContent = '保存一次数据后自动备份';
+    }
+  } catch(e) {
+    document.getElementById('backupInfo').textContent = '备份系统就绪';
+  }
+}
+
+function saveBodyData() {
+  const weight = parseFloat(document.getElementById('weightInput').value);
+  const bodyFat = parseFloat(document.getElementById('bodyFatInput').value);
+  if(!weight && !bodyFat) { showToast('请至少输入体重或体脂'); return; }
+  const date = new Date().toISOString().slice(0,10);
+  const db = getDB();
+  // Update existing or add new
+  const existing = db.bodyRecords.findIndex(b => b.date === date);
+  const record = { id: Date.now(), date, weight: weight||0, bodyFat: bodyFat||0, createdAt: Date.now() };
+  if(existing >= 0) db.bodyRecords[existing] = record;
+  else db.bodyRecords.push(record);
+  saveDB(db);
+  autoBackup(db, '身体数据');
+  showToast('✅ 身体数据已保存');
+  document.getElementById('weightInput').value = '';
+  document.getElementById('bodyFatInput').value = '';
+  renderProfile();
+}
+
+function clearForm() {
+  document.getElementById('weightInput').value = '';
+  document.getElementById('bodyFatInput').value = '';
+}
+
+function clearAllData() {
+  if(!confirm('确定要清空所有锻炼数据吗？此操作不可恢复！')) return;
+  if(!confirm('再次确认：真的要删除所有数据吗？')) return;
+  localStorage.removeItem(DB_KEY);
+  showToast('🗑️ 数据已清空');
+  renderHome();
+  renderProfile();
+  renderMedals();
+}
+
+function exportData() {
+  const db = getDB();
+  const dataStr = JSON.stringify(db, null, 2);
+  const blob = new Blob([dataStr], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `呆兔锻炼数据_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 数据已导出');
+}
+
+// Import backup from file
+function importBackupFile(event) {
+  const file = event.target.files[0];
+  if(!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      
+      // Support both direct data format and auto-backup format
+      let importData = data;
+      if(data.data && data.data.records) {
+        importData = data.data;  // Auto-backup format
+      }
+      
+      // Validate
+      if(!importData.records || !Array.isArray(importData.records)) {
+        showToast('❌ 文件格式不对，请选择正确的备份文件');
+        return;
+      }
+      
+      const recordCount = importData.records.length;
+      const bodyCount = (importData.bodyRecords||[]).length;
+      const dateRange = recordCount > 0
+        ? `${importData.records[0].date} ~ ${importData.records[recordCount-1].date}`
+        : '无锻炼记录';
+      
+      if(!confirm(`即将导入备份文件：\n📄 ${file.name}\n💪 ${recordCount}条锻炼记录\n⚖️ ${bodyCount}条身体数据\n📅 ${dateRange}\n\n⚠️ 当前数据将被覆盖！`)) {
+        event.target.value = '';
+        return;
+      }
+      
+      localStorage.setItem(DB_KEY, JSON.stringify(importData));
+      // Also update auto-backup
+      autoBackup(importData, '导入恢复');
+      
+      showToast(`✅ 导入成功！${recordCount}条记录`);
+      event.target.value = '';
+      renderHome();
+      renderProfile();
+      renderMedals();
+    } catch(err) {
+      showToast('❌ 文件解析失败：' + err.message);
+      event.target.value = '';
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ===================== REMINDER =====================
+function updateReminder() {
+  const db = getDB();
+  const today = new Date().toISOString().slice(0,10);
+  const hasBody = db.bodyRecords.some(b => b.date === today);
+  const hasWorkout = db.records.some(r => r.date === today);
+  if(hasWorkout && !hasBody) {
+    document.getElementById('reminderBanner').innerHTML = `
+      <div class="reminder-banner">
+        <div class="icon">⚖️</div>
+        <div class="text">锻炼完了！今天还没记录体重和体脂哦 🐰</div>
+        <button class="btn btn-sm btn-primary" onclick="navigateTo('profile')">去记录</button>
+      </div>
+    `;
+  }
+}
+
+// ===================== VOICE INPUT =====================
+let mediaRecorder = null;
+let audioChunks = [];
+
+// ===================== SHARE =====================
+function openShare() {
+  const db = getDB();
+  const today = new Date().toISOString().slice(0,10);
+  const todayRecords = db.records.filter(r => r.date === today);
+  const totalCal = todayRecords.reduce((s,r) => s+(r.calories||0),0);
+  const totalCount = todayRecords.length;
+
+  document.getElementById('shareStats').textContent =
+    `今天锻炼了 ${totalCount} 项，消耗了 ${totalCal} 大卡！`;
+  document.getElementById('shareCal').textContent = totalCal;
+  document.getElementById('shareModal').classList.add('show');
+}
+
+function closeShare() {
+  document.getElementById('shareModal').classList.remove('show');
+}
+
+function shareCopy() {
+  const db = getDB();
+  const today = new Date().toISOString().slice(0,10);
+  const todayRecords = db.records.filter(r => r.date === today);
+  const totalCal = todayRecords.reduce((s,r) => s+(r.calories||0),0);
+  const exercises = todayRecords.map(r => r.exerciseName).join('、');
+  const text = `🐰 呆兔要变生猛兔！\n📅 ${today}\n💪 今天锻炼：${exercises||'暂无'}\n🔥 消耗：${totalCal} 大卡\n\n暑假努力增肌减脂中，一起加油！💪`;
+  if(navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast('📋 已复制到剪贴板')).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+  closeShare();
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  document.execCommand('copy'); ta.remove();
+  showToast('📋 已复制到剪贴板');
+}
+
+function shareAsImage() {
+  // Generate a share image on canvas
+  const db = getDB();
+  const today = new Date().toISOString().slice(0,10);
+  const todayRecords = db.records.filter(r => r.date === today);
+  const totalCal = todayRecords.reduce((s,r) => s+(r.calories||0),0);
+  const canvas = document.getElementById('shareCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = 400, H = 500;
+
+  // Background
+  const grad = ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'#7F77DD');
+  grad.addColorStop(0.6,'#534AB7');
+  grad.addColorStop(1,'#3C3489');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.roundRect(0,0,W,H,20);
+  ctx.fill();
+
+  // Title
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 24px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('🐰 呆兔要变生猛兔', W/2, 50);
+
+  // Date
+  ctx.font = '14px sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.8)';
+  ctx.fillText(today, W/2, 80);
+
+  // Divider
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(60, 100);
+  ctx.lineTo(340, 100);
+  ctx.stroke();
+
+  // Stats
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 48px sans-serif';
+  ctx.fillText(totalCal+'', W/2, 170);
+  ctx.font = '14px sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.8)';
+  ctx.fillText('今日消耗大卡', W/2, 195);
+
+  // Items
+  ctx.font = '16px sans-serif';
+  ctx.fillStyle = '#fff';
+  let y = 240;
+  todayRecords.forEach((r,i) => {
+    ctx.fillText(`${r.exerciseName} ${r.reps||0}次 ${r.calories||0}大卡`, W/2, y);
+    y += 30;
+  });
+
+  if(todayRecords.length === 0) {
+    ctx.fillText('今天还没锻炼呢！', W/2, 260);
+  }
+
+  // Rabbit
+  ctx.font = '60px sans-serif';
+  ctx.fillText('🐰💪', W/2, H-80);
+
+  // Tagline
+  ctx.font = '13px sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  ctx.fillText('暑假增肌减脂计划 · 一起加油！', W/2, H-30);
+
+  // Download
+  const link = document.createElement('a');
+  link.download = `呆兔锻炼_${today}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  showToast('📷 分享图已保存');
+  closeShare();
+}
+
+// ===================== STATS TABS =====================
+document.getElementById('statsTabs').addEventListener('click', function(e) {
+  const tab = e.target.closest('.stats-tab');
+  if(tab) renderStats(tab.dataset.period);
+});
+
+// ===================== INIT STATS ON LOAD =====================
+setTimeout(() => renderStats('day'), 100);
+setTimeout(() => renderMedals(), 200);
+</script>
+</body>
+</html>
